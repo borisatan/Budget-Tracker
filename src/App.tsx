@@ -1,56 +1,77 @@
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  ChartOptions,
-  Plugin
-} from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartOptions, Plugin, Chart } from "chart.js";
+import React, { useState, useEffect, useRef } from 'react';
 import { Doughnut } from "react-chartjs-2";
+import { Calendar } from "react-calendar";
+import 'react-calendar/dist/Calendar.css'; // Uncomment this to include default calendar styles
+import "./App.css"
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function calculateMoney(budget: number, expenses: string | any[], left: boolean) {
+function calculateMoney(budget: number, expenses: number[], left: boolean): number {
   let totalExpense = 0;
 
-  for (let i = 0; i < expenses.length; i++) {
-    totalExpense += expenses[i];
+  for (const expense of expenses) {
+    if (typeof expense === 'number') {
+      totalExpense += expense;
+    } else {
+      console.error('Invalid expense value:', expense);
+      return budget; // or handle the error as needed
+    }
   }
-  if (left) return budget - totalExpense;
-  else return totalExpense;
+  
+  return left ? budget - totalExpense : totalExpense;
+}
+
+interface ExpenseEntry {
+  date: Date;
+  amountSpent: number;
+  description: string;
 }
 
 function App() {
-  let moneyLeft = calculateMoney(1000, [100], true);
-  let moneySpent = calculateMoney(1000, [100], false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [amountSpent, setAmountSpent] = useState<number>(0);
+  const [description, setDescription] = useState<string>('');
+  const [expenses, setExpenses] = useState<ExpenseEntry[]>([]); // Array to store expense entries
+  
+
+  const budget = 1000;
+  
+  const moneyLeft = calculateMoney(budget, expenses.map(e => e.amountSpent), true);
+  const moneySpent = calculateMoney(budget, expenses.map(e => e.amountSpent), false);
 
   const data = {
-    labels: ["Left: " + moneyLeft, "Spent: " + moneySpent],
+    labels: [`Left: ${moneyLeft}€`, `Spent: ${moneySpent}€`],
     datasets: [
       {
         data: [moneyLeft, moneySpent],
-        backgroundColor: ["green", "red"],
-        borderColor: "",
+        backgroundColor: ["#4caf50", "#f44336"], // Use colors that look nice together
+        borderColor: "#000", 
+        borderWidth: 1
       },
     ],
   };
 
-  const centerTextPlugin: Plugin<"doughnut"> = {
+  // Chart reference to force updates
+  const chartRef = useRef<Chart<'doughnut'>>(null);
+
+  // Define the plugin inside the component to use the latest moneyLeft value
+  const centerTextPlugin: Plugin<'doughnut'> = {
     id: "centerTextPlugin",
     afterDraw(chart) {
       const { ctx, width, height } = chart;
       const text = `${moneyLeft}€`;
       ctx.save();
-      ctx.font = "bold 60px Arial";  // Increased font size
+      ctx.font = "bold 40px Arial"; // Adjusted font size for better fit
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = "green";  // Green color for the text
+      ctx.fillStyle = "#4caf50"; // Use the same color as the chart segment
       ctx.fillText(text, width / 2, height / 2);
       ctx.restore();
     },
   };
 
-  const options: ChartOptions<"doughnut"> = {
+  const options: ChartOptions<'doughnut'> = {
     plugins: {
       legend: {
         position: "bottom", // Position the legend below the chart
@@ -58,19 +79,144 @@ function App() {
     },
   };
 
-  // Inline styles to increase chart size
-  const chartStyle = {
-    width: "500px",  // Increased chart width
-    height: "500px", // Increased chart height
+  // Inline styles for the chart and calendar container
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center', // Align items to the start
+    gap: '20px', // Add gap between chart and calendar
+    padding: '20px', // Add some padding around the container
+    backgroundColor: '#f4f4f4', // Light background color for the whole page
+    borderRadius: '10px', // Rounded corners for the container
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+    height: '100vh', // Fill the viewport height
+    width: '100vw', // Fill the viewport width
   };
+
+  // Inline styles to control sizes
+  const chartStyle = {
+    width: "500px", // Adjusted chart width
+    height: "500px", // Adjusted chart height
+    borderRadius: '10px', // Rounded corners for the chart
+    overflow: 'hidden', // Hide overflow for rounded corners
+  };
+
+  const calendarStyle = {
+    width: "800px", // Adjusted calendar width
+    height: "auto", // Let height be adjusted automatically
+    borderRadius: '10px', // Rounded corners for the calendar
+    overflow: 'hidden', // Hide overflow for rounded corners
+  };
+
+  const calendarContainerStyle = {
+    display: 'flex',
+    width: "800px", // Adjusted calendar width
+    height: "auto", // Let height be adjusted automatically
+    borderRadius: '10px', // Rounded corners for the calendar
+    overflow: 'hidden', // Hide overflow for rounded corners
+  };
+
+  const inputContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    gap: '10px',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+    width: '450px', // Adjust as needed
+  };
+
+  const labelStyle = {
+    display: 'flex',
+    marginBottom: '10px',
+    flexDirection: 'column' as 'column',
+    gap: '5px',
+  }
+
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    // Find entry for the selected date
+    const entry = expenses.find(e => e.date.toDateString() === date.toDateString());
+    if (entry) {
+      setAmountSpent(entry.amountSpent);
+      setDescription(entry.description);
+    } else {
+      setAmountSpent(0);
+      setDescription('');
+    }
+  };
+
+  const handleSave = () => {
+    if (selectedDate) {
+      const newEntry: ExpenseEntry = {
+        date: selectedDate,
+        amountSpent,
+        description
+      };
+
+      // Check if there's already an entry for the selected date
+      const updatedExpenses = expenses.filter(e => e.date.toDateString() !== selectedDate.toDateString());
+      setExpenses([...updatedExpenses, newEntry]);
+
+      
+      // Close the input container
+      setSelectedDate(null);
+      setAmountSpent(0);
+      setDescription('');
+    }
+  };
+
+  // Update chart when moneyLeft changes
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.update();
+    }
+  }, [moneyLeft, expenses]); // Added expenses to ensure the chart updates when expenses change
 
   return (
     <div className="App">
-      <div style={chartStyle}>
-        <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
+      <div style={containerStyle}>
+        <div style={chartStyle}>
+          <Doughnut
+            data={data}
+            options={options}
+            plugins={[centerTextPlugin]}
+            ref={chartRef}
+          />
+        </div>
+        <div style={calendarContainerStyle}>
+          <Calendar onClickDay={handleDateClick} />
+          {selectedDate && (
+            <div style={inputContainerStyle}>
+              <h3>Details for {selectedDate.toDateString()}</h3>
+              <label>
+                Amount Spent:
+                <input
+                  type="number"
+                  value={amountSpent}
+                  onChange={(e) => setAmountSpent(parseFloat(e.target.value))}
+                />
+              </label>
+              <label style={labelStyle}>
+                Description:
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </label>
+              <button onClick={handleSave}>Save</button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 export default App;
+
+
+// center text doesn't change
+// Dynamically write budget for each month
+// store the graph for each month
+// check type when typing in

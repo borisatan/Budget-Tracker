@@ -1,42 +1,84 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+
+/* App.css */
+body {
+  margin: 0;
+  font-family: Helvetica, sans-serif;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.background {
+  background: white; /* White background for the content area */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.react-calendar {
+  font-family: Arial, sans-serif; /* Optional: change the font */
 }
 
-.card {
-  padding: 2em;
+.react-calendar__tile {
+  background: rgb(255, 255, 255); /* Change tile background to white */
+  color: black; /* Change tile text color to black */
 }
 
-.read-the-docs {
-  color: #888;
+.react-calendar__tile--active {
+  background: lightblue; /* Change background color of the active tile */
+  color: black; /* Change text color of the active tile */
+}
+
+.react-calendar__tile--hover {
+  background: lightgrey; /* Change background color of hovered tiles */
+  color: rgb(0, 0, 0); /* Change text color of hovered tiles */
+} 
+
+.react-calendar__month-view__days__day--weekend {
+  color: red; /* Change weekend text color to red */
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: gray;
+}
+
+.react-calendar__navigation__arrow {
+  color: black;
+}
+
+.react-calendar__navigation__label {
+  color: black;
+}
+
+.input-container {
+  margin-top: 20px;
+}
+
+.input-container h2 {
+  margin-bottom: 10px;
+}
+
+.input-container input {
+  padding: 10px;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.input-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.input-container button:hover {
+  background-color: #45a049;
 }
