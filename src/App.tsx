@@ -60,7 +60,13 @@ function App() {
     id: "centerTextPlugin",
     afterDraw(chart) {
       const { ctx, width, height } = chart;
-      const text = `${moneyLeft}€`;
+      
+      // Cast chart.options.plugins to allow centerText with a string text property
+      const centerTextOptions = chart.options.plugins as { centerText?: { text: string } };
+  
+      // Use custom text or default to `moneyLeft`
+      const text = centerTextOptions?.centerText?.text || `${moneyLeft}€`;
+  
       ctx.save();
       ctx.font = "bold 40px Arial"; // Adjusted font size for better fit
       ctx.textAlign = "center";
@@ -70,14 +76,18 @@ function App() {
       ctx.restore();
     },
   };
+  
 
-  const options: ChartOptions<'doughnut'> = {
+  const options = {
     plugins: {
       legend: {
-        position: "bottom", // Position the legend below the chart
+        position: "bottom",
+      },
+      centerText: {
+        text: `${moneyLeft}€`,
       },
     },
-  };
+  } as ChartOptions<'doughnut'> & { plugins: { centerText: { text: string } } };
 
   // Inline styles for the chart and calendar container
   const containerStyle = {
@@ -190,11 +200,15 @@ function App() {
             <div style={inputContainerStyle}>
               <h3>Details for {selectedDate.toDateString()}</h3>
               <label>
-                Amount Spent:
+                Amount Spent: &nbsp;
                 <input
                   type="number"
                   value={amountSpent}
-                  onChange={(e) => setAmountSpent(parseFloat(e.target.value))}
+                  onChange={(e) => {
+                    let value = parseFloat(e.target.value)
+                    if (!isNaN(value)) setAmountSpent(value)
+                    else setAmountSpent(0)}}
+                    
                 />
               </label>
               <label style={labelStyle}>
@@ -214,9 +228,3 @@ function App() {
 }
 
 export default App;
-
-
-// center text doesn't change
-// Dynamically write budget for each month
-// store the graph for each month
-// check type when typing in
