@@ -1,72 +1,115 @@
-
-/* App.css */
+/* General body styling */
 body {
   margin: 0;
   font-family: Helvetica, sans-serif;
+  background-color: #f4f4f4; /* Light background */
+  color: black; /* Default text color for light mode */
+  transition: background-color 0.3s, color 0.3s;
 }
 
+body.dark-mode {
+  background-color: #1e1e1e;
+  color: #cfcfcf;
+}
+
+/* Main App container */
 .App {
   min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center;  
+  background-color: '#f4f4f4';
+  padding: 20px;
+}
+
+/* Container for chart and calendar */
+.container {
+  display: flex;
   align-items: center;
-  padding: 20px;
+  gap: '20px';
+  padding: '20px';
+  border-radius: '10px';
+  box-shadow: '0px 0px 10px rgba(0, 0, 0, 0.1)';
+  height: '100vh';
+  width: '100vw';
 }
 
-.background {
-  background: white; /* White background for the content area */
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+body.dark-mode .container {
+  background: #333;
 }
 
+
+
+/* Calendar styling */
 .react-calendar {
-  font-family: Arial, sans-serif; /* Optional: change the font */
+  font-family: Arial, sans-serif;
 }
 
 .react-calendar__tile {
-  background: rgb(255, 255, 255); /* Change tile background to white */
-  color: black; /* Change tile text color to black */
+  background: white;
+  color: black;
+}
+
+body.dark-mode .react-calendar__tile {
+  background: #555;
+  color: white;
 }
 
 .react-calendar__tile--active {
-  background: lightblue; /* Change background color of the active tile */
-  color: black; /* Change text color of the active tile */
+  background: lightblue;
+  color: black;
+}
+
+body.dark-mode .react-calendar__tile--active {
+  background: darkcyan;
 }
 
 .react-calendar__tile--hover {
-  background: lightgrey; /* Change background color of hovered tiles */
-  color: rgb(0, 0, 0); /* Change text color of hovered tiles */
-} 
+  background: lightgrey;
+  color: black;
+}
 
+body.dark-mode .react-calendar__tile--hover {
+  background: darkgrey;
+}
+
+/* Weekends in red */
 .react-calendar__month-view__days__day--weekend {
-  color: red; /* Change weekend text color to red */
+  color: red;
+}
+body.dark-mode .react-calendar__month-view__days__day--weekend {
+  color: rgb(255, 61, 61);
 }
 
+
+/* Neighboring month days in gray */
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: gray;
+  color: darkgray;
 }
 
-.react-calendar__navigation__arrow {
-  color: black;
+body.dark-mode .react-calendar__month-view__days__day--neighboringMonth {
+  color: darkgray;
 }
 
-.react-calendar__navigation__label {
-  color: black;
-}
 
+/* Input and button styling */
 .input-container {
   margin-top: 20px;
 }
 
-.input-container h2 {
-  margin-bottom: 10px;
-}
-
-.input-container input {
+.input-container input, .input-container textarea {
   padding: 10px;
   margin-right: 10px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+body.dark-mode .input-container input,
+body.dark-mode .input-container textarea {
+  background-color: #444;
+  color: white;
+  border: 1px solid #555;
 }
 
 .input-container button {
@@ -76,9 +119,51 @@ body {
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
+  transition: background-color 0.3s ease;
 }
 
 .input-container button:hover {
   background-color: #45a049;
+}
+
+body.dark-mode .input-container button {
+  background-color: darkgreen;
+}
+
+body.dark-mode .input-container button:hover {
+  background-color: #3d8e3e;
+}
+
+/* Dark mode toggle button styling */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+  outline: 2px solid #555; /* Set outline width and color */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .dark-mode-toggle {
+  background-color: #555;
+  color: white;
+  outline: 2px solid #e1e1e1; /* Set outline width and color */
+}
+
+.react-calendar__navigation__arrow,
+.react-calendar__navigation__label {
+  color: black;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #e0e0e0;
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+  background-color: #555;
 }

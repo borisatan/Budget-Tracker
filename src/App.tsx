@@ -33,6 +33,7 @@ function App() {
   const [amountSpent, setAmountSpent] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
   const [expenses, setExpenses] = useState<ExpenseEntry[]>([]); // Array to store expense entries
+  const [darkMode, setDarkMode] = useState(false); // New state for dark mode
   
 
   const budget = 1000;
@@ -89,18 +90,6 @@ function App() {
     },
   } as ChartOptions<'doughnut'> & { plugins: { centerText: { text: string } } };
 
-  // Inline styles for the chart and calendar container
-  const containerStyle = {
-    display: 'flex',
-    alignItems: 'center', // Align items to the start
-    gap: '20px', // Add gap between chart and calendar
-    padding: '20px', // Add some padding around the container
-    backgroundColor: '#f4f4f4', // Light background color for the whole page
-    borderRadius: '10px', // Rounded corners for the container
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
-    height: '100vh', // Fill the viewport height
-    width: '100vw', // Fill the viewport width
-  };
 
   // Inline styles to control sizes
   const chartStyle = {
@@ -176,6 +165,11 @@ function App() {
     }
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
+    document.body.classList.toggle('dark-mode');
+  };
+
   // Update chart when moneyLeft changes
   useEffect(() => {
     if (chartRef.current) {
@@ -185,7 +179,10 @@ function App() {
 
   return (
     <div className="App">
-      <div style={containerStyle}>
+      <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+        {darkMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
+      <div className="container">
         <div style={chartStyle}>
           <Doughnut
             data={data}
