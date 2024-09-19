@@ -69,7 +69,7 @@ function App() {
       const text = centerTextOptions?.centerText?.text || `${moneyLeft}€`;
   
       ctx.save();
-      ctx.font = "bold 40px Arial"; // Adjusted font size for better fit
+      ctx.font = "bold 35px Arial"; // Adjusted font size for better fit
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#4caf50"; // Use the same color as the chart segment
