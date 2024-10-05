@@ -39,6 +39,7 @@ body.dark-mode {
 body.dark-mode .container {
   background: #333    ;
   transition: background-color 0.3s ease, color 0.3s ease;
+  background: #1e1e1e;
 }
 
 
