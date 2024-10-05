@@ -4,12 +4,13 @@ body {
   font-family: Helvetica, sans-serif;
   background-color: #f4f4f4; /* Light background */
   color: black; /* Default text color for light mode */
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s ease;
 }
 
 body.dark-mode {
-  background-color: #1e1e1e;
+  background-color: #333;
   color: #cfcfcf;
+  transition: background-color 0.3s, color 0.3s ease;
 }
 
 /* Main App container */
@@ -34,10 +35,11 @@ body.dark-mode {
   width: '100vw';
 }
 
-body.dark-mode .container {
-  background: #333;
-}
 
+body.dark-mode .container {
+  background: #333    ;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 
 /* Calendar styling */
